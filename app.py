@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import kagglehub
+import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -41,12 +43,24 @@ st.markdown("""
 """)
 
 # =========================================================
-# LOAD DATASET
+# LOAD DATASET FROM KAGGLE
 # =========================================================
 @st.cache_data
 def load_data():
 
-    df = pd.read_csv("creditcard.csv")
+    # Download dataset
+    path = kagglehub.dataset_download(
+        "mlg-ulb/creditcardfraud"
+    )
+
+    # CSV file path
+    csv_path = os.path.join(
+        path,
+        "creditcard.csv"
+    )
+
+    # Load dataset
+    df = pd.read_csv(csv_path)
 
     return df
 
@@ -191,8 +205,6 @@ else:
     y_pred = model.predict(X_test)
 
     # Convert predictions
-    # -1 = Fraud
-    # 1 = Normal
     y_pred = np.where(
         y_pred == -1,
         1,
@@ -335,4 +347,5 @@ Developed using:
 - Pandas
 - Seaborn
 - Matplotlib
+- KaggleHub
 """)
